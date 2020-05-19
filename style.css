@@ -1,0 +1,27 @@
+.jumbotron {
+    text-align: center;
+    background-color: rgb(78, 78, 78);
+    color: white;
+    font-size: 30px;
+    padding: 5px;
+}
+.searchBar {
+    display: block;
+}
+aside {
+    float: left;
+    border: 2px solid black;
+    width: 300px;
+    height: 500px;
+    padding: 10px;
+}
+.card {
+    display: block;
+}
+main {
+    float: left;
+    border: 2px solid black;
+    width: 985px;
+    height: 500px;
+    padding: 10px;
+}

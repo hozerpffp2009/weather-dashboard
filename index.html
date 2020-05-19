@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <title>Weather Dashboard</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <div class="jumbotron">
+            <h1>Weather Dashboard</h1>
+
+        </div>
+        <div class="searchBar">     
+            <aside>     
+            <table style="width: 200px;">
+                <tr>
+                <th>Search for a Ctiy:</th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" placeholder="Enter city here" id="input"> </td>
+                <td><button id="search" style="background-color: red;">Search</button></td>
+            </tr>
+            </table>
+        </aside> 
+          
+        </div>
+
+        <div class="card">
+           <main>
+
+           </main>
+
+        </div>
+        <!-- movie api key c42de9806b568b66fa5c655eb821d357 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+        var cities = ["San Antonio,Tx"]
+    
+        function displayWeatherInfo() {
+            var city = $(this).attr("data-name");
+            var queryUrl = "http://api.openweathermap.org/data/2.5/forecast?id=" + city + "&APPID=c42de9806b568b66fa5c655eb821d357"
+            console.log(queryUrl)
+            $.ajax({
+                url: queryUrl,
+                method: "Get"
+            }).then(function(response) {
+
+            }); 
+        }
+
+        function weatherButtons() {
+            $("buttons-view").empty();
+            for (var i = 0; i < cities.length; i++) {
+                var m = $("<button>");
+                m.addClass("weather-btn");
+                m.attr("data-name", cities[i]);
+                m.text(cities[i]);
+                $("#buttons-view").append(m);
+            }
+        }
+        
+        $("#add-movie").on("click", function(event) {
+            event.preventDefault();
+            var city = $("#weather-input").val().trim();
+            cities.push(city);
+            weatherButtons();
+        })
+        $(document).on("click", ".weather-btn", displayWeatherInfo);
+        weatherButtons();
+        
+        
+        
+        </script>
+
+
+
+    </body>
+
+</html>
