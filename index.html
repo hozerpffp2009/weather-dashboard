@@ -6,14 +6,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
+        
         <link rel="stylesheet" href="bootstrap.css">
     </head>
 
     <body>
+        <!-- Jumbotron which shows title of webpage -->
         <div class="jumbotron">
             <h1>Weather Dashboard</h1>
 
         </div>
+        <!--Search bar in table format-->
         <div class="searchBar">     
             <aside>     
             <table style="width: 200px;">
@@ -32,41 +35,40 @@
         </aside> 
           
         </div>
-
+        <!--this class hold the current forecast-->
         <div class="card">
            <main>   <h4>Current forecast:</h4>
             <div class="weathered">
-               
-            
-            </div>
-
-            <div class="imgsource">
 
             </div>
+
            </main>
 
         </div>
-
+        <!--This class holds 3 day forecast, i wanted to do a 5 day forecast, but the api would not work-->
         <div class="week">
-            <h4>Five day forecast</h4>
+            <h4>Three day forecast</h4>
+            <div class="foreweek">
 
+            </div>
+           
         </div>
         
-        
+        <!--begin java script coding-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
         var cities = ["Miami", "Houston", "Austin"]
         var APIkey ='c42de9806b568b66fa5c655eb821d357'
         var APIweather =  'f0dfbb2ec818424386e03944202605'
+        //fuction to display current and 3 day forecast
         function displayWeatherInfo() {
             var city = $(this).attr("data-name");           
-            // var queryUrl = 
-            // console.log(queryUrl)
+           // api for current forecast
             $.ajax({
                 url: 'http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIkey + '&units=imperial',
                 method: "Get"
             })     
- 
+            
             .then(function(response) {
                 //create div class for weather info
                 var cityDiv = $("<div class = 'weathered'>");              
@@ -88,62 +90,58 @@
                 cityDiv.append(pThree);
                     //retrieve and append url image
                 var imgURL = response.weather[0].icon;
-                var image = "http://openweathermap.org/img/w/" + imgURL + ".png";
-                $(".imgsource").empty();
-               $(".imgsource").append('<img src="' + image + '" />');
-                    $(".weathered").empty();
-                   
-               
-              
-               
-                  
-                    $(".weathered").append(cityDiv);
-                   
-  
-          
+                var image = "http://openweathermap.org/img/w/" + imgURL + ".png";               
+                $(".weathered").empty();  
+               $(".weathered").append('<img src="' + image + '" />');                                  
+                   $(".weathered").append(cityDiv);
+                    console.log(response)
             }); 
-            
+            //This api is for 3 day forecast
             $.ajax({
              url:'http://api.weatherapi.com/v1/forecast.json?key=f0dfbb2ec818424386e03944202605&q='+ city + '&days=5',
              method: "Get"
          }) .then(function(respond) {
-            for (var i = 0; i < 3; i++){
+               $(".foreweek").empty();
+            for (var i = 0; i < 3; i++)  {             
+               // var to isolate div class "week"
               var forcastF = $("<div class = 'week'>");
+              
+              //pulls data for name of city
+                var cityName = respond.location.name;
+                var foreName = $("<h2>").text(cityName);
+                forcastF.append(foreName);
+               
+                    console.log(cityName)
+              // pulls data for the dates of the 3 day forecast
               var date = respond.forecast.forecastday[i].date;
               var tThree = $("<p>").text("Date:" + date);
+              //append the dates to "week"
               forcastF.append(tThree);
+              // pulls data for the avg temp of the 3 day forecast
               var avgtemp = respond.forecast.forecastday[i].day.avgtemp_f;
               var tOne = $("<p>").text("Avg temp:" + avgtemp + "F");
+              // append the avg temp to "week"
               forcastF.append(tOne);
-
+                // pulls the data for the avg humidity for the d3 day forecast
               var avgHum = respond.forecast.forecastday[i].day.avghumidity;
               var tTwo = $("<p>").text("Humidity:" + avgHum + "%");
+              // append the avg humidity to "week"
               forcastF.append(tTwo);
-              
+              // pulls icon image for 3 day forecast
               var forImage = respond.forecast.forecastday[i].day.condition.icon;
-              var tFour = $("<p>").text(forImage);
-              forcastF.append(tFour);
-
-              console.log(date)
+              var tFour = 'http://cdn.weatherapi.com/weather/64x64/day/176.png'
+              // append image icon to "week"
+            //   $(".foreweek").empty();
+            $(".foreweek").append('<img src="' + tFour + '" />');
+                 $(".foreweek").append(forcastF);
                 
-               
-
-                 $(".week").append(forcastF);
-            console.log(respond);
+                          console.log(respond)
              }
+            
          });
         }
         
-        function fiveDayForecast() {
-        //  $.ajax({
-        //      url:'http://api.weatherapi.com/v1/forecast.json?key=f0dfbb2ec818424386e03944202605&q='+ city + '&days=5',
-        //      method: "Get"
-        //  }) .then(function(response) {
-        //     console.log(response);
-        //  });
      
-               
-        }
 // Function for displaying weather data
         function weatherButtons() {
             $("#city").empty();
@@ -160,13 +158,13 @@
             var city = $("#input").val().trim();
             cities.push(city);
             weatherButtons();
-            fiveDayForecast()
+           
         })
       // Click event listner for all elements with weather-btn
         $(document).on("click", ".weather-btn", displayWeatherInfo);
-        $(document).on("click", ".weather-btn", fiveDayForecast);
+       
         weatherButtons();
-        fiveDayForecast()        
+               
         
         </script>
 
