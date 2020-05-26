@@ -65,7 +65,7 @@
             var city = $(this).attr("data-name");           
            // api for current forecast
             $.ajax({
-                url: 'http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIkey + '&units=imperial',
+                url: 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIkey + '&units=imperial',
                 method: "Get"
             })     
             
@@ -90,7 +90,7 @@
                 cityDiv.append(pThree);
                     //retrieve and append url image
                 var imgURL = response.weather[0].icon;
-                var image = "http://openweathermap.org/img/w/" + imgURL + ".png";               
+                var image = "https://openweathermap.org/img/w/" + imgURL + ".png";               
                 $(".weathered").empty();  
                $(".weathered").append('<img src="' + image + '" />');                                  
                    $(".weathered").append(cityDiv);
@@ -98,7 +98,7 @@
             }); 
             //This api is for 3 day forecast
             $.ajax({
-             url:'http://api.weatherapi.com/v1/forecast.json?key=f0dfbb2ec818424386e03944202605&q='+ city + '&days=5',
+             url:'https://api.weatherapi.com/v1/forecast.json?key=f0dfbb2ec818424386e03944202605&q='+ city + '&days=5',
              method: "Get"
          }) .then(function(respond) {
                $(".foreweek").empty();
@@ -129,7 +129,7 @@
               forcastF.append(tTwo);
               // pulls icon image for 3 day forecast
               var forImage = respond.forecast.forecastday[i].day.condition.icon;
-              var tFour = 'http://cdn.weatherapi.com/weather/64x64/day/176.png'
+              var tFour = 'https://cdn.weatherapi.com/weather/64x64/day/176.png'
               // append image icon to "week"
             //   $(".foreweek").empty();
             $(".foreweek").append('<img src="' + tFour + '" />');
