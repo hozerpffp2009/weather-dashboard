@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <meta charset="utf-8"> 
         <title>Weather Dashboard</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="bootstrap.css">
     </head>
 
     <body>
@@ -16,12 +18,15 @@
             <aside>     
             <table style="width: 200px;">
                 <tr>
-                <th>Search for a Ctiy:</th>
+                <th>Search for a City:</th>
             </tr>
             <tr>
                 <td>
                     <input type="text" placeholder="Enter city here" id="input"> </td>
-                <td><button id="search" style="background-color: red;">Search</button></td>
+                <td><button class="weather-btn" id="search" style="background-color: red;">Search</button></td>
+            </tr>
+            <tr id="city">
+            
             </tr>
             </table>
         </aside> 
@@ -29,49 +34,139 @@
         </div>
 
         <div class="card">
-           <main>
+           <main>   <h4>Current forecast:</h4>
+            <div class="weathered">
+               
+            
+            </div>
 
+            <div class="imgsource">
+
+            </div>
            </main>
 
         </div>
-        <!-- movie api key c42de9806b568b66fa5c655eb821d357 -->
+
+        <div class="week">
+            <h4>Five day forecast</h4>
+
+        </div>
+        
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
-        var cities = ["San Antonio,Tx"]
-    
+        var cities = ["Miami", "Houston", "Austin"]
+        var APIkey ='c42de9806b568b66fa5c655eb821d357'
+        var APIweather =  'f0dfbb2ec818424386e03944202605'
         function displayWeatherInfo() {
-            var city = $(this).attr("data-name");
-            var queryUrl = "http://api.openweathermap.org/data/2.5/forecast?id=" + city + "&APPID=c42de9806b568b66fa5c655eb821d357"
-            console.log(queryUrl)
+            var city = $(this).attr("data-name");           
+            // var queryUrl = 
+            // console.log(queryUrl)
             $.ajax({
-                url: queryUrl,
+                url: 'http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIkey + '&units=imperial',
                 method: "Get"
-            }).then(function(response) {
-
+            })     
+ 
+            .then(function(response) {
+                //create div class for weather info
+                var cityDiv = $("<div class = 'weathered'>");              
+                   // storing, creating and displaying min temp
+                var lowTemp = response.main.temp_min;
+                var pOne = $("<h5>").text("Minimum temp: " + lowTemp + "F");
+                cityDiv.append(pOne);
+                
+                var highTemp = response.main.temp_max;
+                var temp =  $("<h5>").text("Maximum temp: " + highTemp + "F");
+                cityDiv.append(temp);
+                   // storing, creating and displaying main data
+                var Main = response.main.temp;
+                var pTwo = $("<h5>").text("Temperature: " + Main + "F" );
+                cityDiv.append(pTwo);
+                    // storing, creating and displaying wind data
+                var Wind = response.wind.speed;
+                var pThree = $("<h5>").text("wind speed: " + Wind + "MPH");
+                cityDiv.append(pThree);
+                    //retrieve and append url image
+                var imgURL = response.weather[0].icon;
+                var image = "http://openweathermap.org/img/w/" + imgURL + ".png";
+                $(".imgsource").empty();
+               $(".imgsource").append('<img src="' + image + '" />');
+                    $(".weathered").empty();
+                   
+               
+              
+               
+                  
+                    $(".weathered").append(cityDiv);
+                   
+  
+          
             }); 
-        }
+            
+            $.ajax({
+             url:'http://api.weatherapi.com/v1/forecast.json?key=f0dfbb2ec818424386e03944202605&q='+ city + '&days=5',
+             method: "Get"
+         }) .then(function(respond) {
+            for (var i = 0; i < 3; i++){
+              var forcastF = $("<div class = 'week'>");
+              var date = respond.forecast.forecastday[i].date;
+              var tThree = $("<p>").text("Date:" + date);
+              forcastF.append(tThree);
+              var avgtemp = respond.forecast.forecastday[i].day.avgtemp_f;
+              var tOne = $("<p>").text("Avg temp:" + avgtemp + "F");
+              forcastF.append(tOne);
 
+              var avgHum = respond.forecast.forecastday[i].day.avghumidity;
+              var tTwo = $("<p>").text("Humidity:" + avgHum + "%");
+              forcastF.append(tTwo);
+              
+              var forImage = respond.forecast.forecastday[i].day.condition.icon;
+              var tFour = $("<p>").text(forImage);
+              forcastF.append(tFour);
+
+              console.log(date)
+                
+               
+
+                 $(".week").append(forcastF);
+            console.log(respond);
+             }
+         });
+        }
+        
+        function fiveDayForecast() {
+        //  $.ajax({
+        //      url:'http://api.weatherapi.com/v1/forecast.json?key=f0dfbb2ec818424386e03944202605&q='+ city + '&days=5',
+        //      method: "Get"
+        //  }) .then(function(response) {
+        //     console.log(response);
+        //  });
+     
+               
+        }
+// Function for displaying weather data
         function weatherButtons() {
-            $("buttons-view").empty();
+            $("#city").empty();
             for (var i = 0; i < cities.length; i++) {
                 var m = $("<button>");
                 m.addClass("weather-btn");
                 m.attr("data-name", cities[i]);
                 m.text(cities[i]);
-                $("#buttons-view").append(m);
+                $("#city").append(m);
             }
         }
-        
-        $("#add-movie").on("click", function(event) {
+        $("#search").on("click", function(event) {
             event.preventDefault();
-            var city = $("#weather-input").val().trim();
+            var city = $("#input").val().trim();
             cities.push(city);
             weatherButtons();
+            fiveDayForecast()
         })
+      // Click event listner for all elements with weather-btn
         $(document).on("click", ".weather-btn", displayWeatherInfo);
+        $(document).on("click", ".weather-btn", fiveDayForecast);
         weatherButtons();
-        
-        
+        fiveDayForecast()        
         
         </script>
 
